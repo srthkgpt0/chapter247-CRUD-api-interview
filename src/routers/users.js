@@ -8,10 +8,10 @@ const userController = require('../controllers/user')
 
 router.post('/signup', userController.addUser)
 router.post('/user', userController.getToken)
-// router.get('/user', auth, userController.getUser)
+router.get('/user', auth, userController.getUser)
 router.patch('/user', auth, userController.updateProfile)
 router.delete('/user', auth, userController.deleteUser)
-
+router.get('/user/download-list', userController.csvExport)
 // router.post("/users", async (req, res) => {
 //   const user = new User(req.body);
 //   try {

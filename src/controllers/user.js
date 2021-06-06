@@ -1,7 +1,9 @@
 const UserModel = require('../models/user')
 const logger = require('../utility/logger')
 const bcrypt = require('bcryptjs')
+const excel = require('exceljs')
 const response = require('../utility/response')
+const User = require('../models/user')
 
 async function addUser(req, res) {
   try {
@@ -11,6 +13,84 @@ async function addUser(req, res) {
     response.responseHandler(res, { token })
   } catch (error) {
     response.errorHandler('addUser', error, res)
+  }
+}
+async function csvExport(req, res) {
+  try {
+    const userList = await User.find({})
+    let workbook = new excel.Workbook()
+    let worksheet = workbook.addWorksheet('Users List')
+    worksheet.columns = [
+      {
+        header: 'Id',
+        key: '_id',
+        width: 30
+      },
+      {
+        header: 'Name',
+        key: 'name',
+        width: 30
+      },
+      {
+        header: 'Age',
+        key: 'age',
+        width: 10
+      },
+      {
+        header: 'Email Address',
+        key: 'email',
+        width: 40
+      },
+      {
+        header: 'Gender',
+        key: 'gender',
+        width: 20
+      },
+      {
+        header: 'Country',
+        key: 'country',
+        width: 30
+      },
+      {
+        header: 'State',
+        key: 'state',
+        width: 30
+      },
+      {
+        header: 'City',
+        key: 'city',
+        width: 30
+      },
+      {
+        header: 'Code',
+        key: 'prefix',
+        width: 10
+      },
+      {
+        header: 'Phone Number',
+        key: 'phone',
+        width: 40
+      },
+      {
+        header: 'Date of birth',
+        key: 'dob',
+        width: 30
+      },
+      {
+        header: 'Skills',
+        key: 'skills',
+        width: 40
+      }
+    ]
+    worksheet.addRows(userList)
+    await workbook.xlsx.writeFile('UserList.xlsx')
+    response.responseHandler(
+      res,
+      null,
+      'File exported successfully in the folder'
+    )
+  } catch (error) {
+    response.errorHandler('exportCSV', error, res)
   }
 }
 
@@ -30,7 +110,12 @@ async function getToken(req, res) {
     response.errorHandler('getToken', error, res)
   }
 }
-
+async function getUser(req, res) {
+  try {
+    const user = await User.find({})
+    response.responseHandler(res, user)
+  } catch (error) {}
+}
 async function updateProfile(req, res) {
   try {
     const updates = Object.keys(req.body)
@@ -66,6 +151,7 @@ module.exports = {
   addUser,
   getToken,
   updateProfile,
-
-  deleteUser
+  getUser,
+  deleteUser,
+  csvExport
 }

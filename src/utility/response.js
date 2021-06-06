@@ -1,25 +1,25 @@
-const logger = require("./logger");
+const logger = require('./logger')
 function errorHandler(methodName, error, res) {
-  logger.error(`Inside ${methodName}. error:` + error);
+  logger.error(`Inside ${methodName}. error:` + error)
   res
     .send({
       status: false,
       response: null,
-      message: error,
+      message: error
     })
-    .end();
+    .end()
 }
 
-function responseHandler(res, data) {
+function responseHandler(res, data, message = null) {
   res
     .send({
       status: true,
       response: data,
-      message: null,
+      message: message
     })
-    .end();
+    .end()
 }
 module.exports = {
   errorHandler,
-  responseHandler,
-};
+  responseHandler
+}
