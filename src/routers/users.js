@@ -11,7 +11,7 @@ const uploadCSV = multer({ dest: __dirname + '/uploads/csv' })
 router.post('/signup', userController.addUser)
 
 router.post('/user', userController.getToken)
-router.post('/csv', auth, upload.single('file'), userController.importCsv)
+router.post('/csv', auth, uploadCSV.single('file'), userController.importCsv)
 router.get('/user', auth, userController.getUser)
 router.patch('/user', auth, userController.updateProfile)
 router.delete('/user', auth, userController.deleteUser)

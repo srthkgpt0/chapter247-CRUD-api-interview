@@ -3,7 +3,6 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const Task = require('./task')
-const { Timestamp } = require('bson')
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -46,13 +45,14 @@ const userSchema = new mongoose.Schema(
       type: Number
     },
     phone: {
-      type: String,
-      validate(value) {
-        var numbers = /^[0-9]+$/
-        if (!value.toLowerCase().match(numbers)) {
-          throw new Error('Phone number should be only numbers')
-        }
-      }
+      type: Number,
+      trim: true
+      // validate(value) {
+      //   var numbers = /^[0-9]+$/
+      //   if (!value.match(numbers)) {
+      //     throw new Error('Phone number should be only numbers')
+      //   }
+      // }
     },
     dob: {
       type: String

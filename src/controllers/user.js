@@ -39,8 +39,9 @@ async function importCsv(req, res) {
     csv()
       .fromFile(req.file.path)
       .then(async (jsonObj) => {
-        // const user = new UserModel(jsonObj);
-        await UserModel.insertMany(jsonObj)
+        jsonObj.forEach(async (element) => {
+          await new UserModel(element)
+        })
       })
     response.responseHandler(res, 'Saved')
   } catch (error) {
@@ -55,57 +56,62 @@ async function csvExport(req, res) {
     let worksheet = workbook.addWorksheet('Users List')
     worksheet.columns = [
       {
-        header: 'Name',
+        header: 'name',
         key: 'name',
         width: 30
       },
       {
-        header: 'Age',
+        header: 'age',
         key: 'age',
         width: 10
       },
       {
-        header: 'Email Address',
+        header: 'email',
         key: 'email',
         width: 40
       },
       {
-        header: 'Gender',
+        header: 'gender',
         key: 'gender',
         width: 20
       },
       {
-        header: 'Country',
+        header: 'country',
         key: 'country',
         width: 30
       },
       {
-        header: 'State',
+        header: 'state',
         key: 'state',
         width: 30
       },
       {
-        header: 'City',
+        header: 'city',
         key: 'city',
         width: 30
       },
       {
-        header: 'Code',
+        header: 'prefix',
         key: 'prefix',
         width: 10
       },
       {
-        header: 'Phone Number',
+        header: 'phone',
         key: 'phone',
         width: 40
       },
       {
-        header: 'Date of birth',
+        header: 'dob',
         key: 'dob',
         width: 30
       },
       {
-        header: 'Skills',
+        header: 'password',
+        key: 'password',
+        width: 20
+      },
+      {
+        header: 'skills',
         key: 'skills',
         width: 40
       }
@@ -126,11 +132,11 @@ async function getToken(req, res) {
   try {
     const user = await UserModel.findOne({ email: req.body.email })
     if (!user) {
-      throw 'User not exists'
+      throw Error('User not exists')
     }
     const isMatch = await bcrypt.compare(req.body.password, user.password)
     if (!isMatch) {
-      throw 'Email/Password Mismatch'
+      throw Error('Email/Password Mismatch')
     }
     const token = await user.generateToken()
     response.responseHandler(res, { user, token })
