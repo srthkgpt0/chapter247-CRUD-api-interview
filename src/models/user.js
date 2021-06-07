@@ -92,11 +92,6 @@ const userSchema = new mongoose.Schema(
   }
 )
 
-userSchema.virtual('tasks', {
-  ref: 'Tasks',
-  localField: '_id',
-  foreignField: 'owner'
-})
 userSchema.methods.generateToken = async function () {
   const user = this
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
